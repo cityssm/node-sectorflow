@@ -12,13 +12,13 @@ await describe('node-sectorflow', async () => {
     sectorFlow = new SectorFlow(apiKey)
   })
 
-  await it.skip('Gets models', async () => {
+  await it('Gets models', async () => {
     const models = await sectorFlow.getModels()
     console.log(models)
     assert(models.length > 0)
   })
 
-  await it.skip('Gets projects', async () => {
+  await it('Gets projects', async () => {
     const projects = await sectorFlow.getProjects()
 
     console.log(projects)
@@ -26,7 +26,7 @@ await describe('node-sectorflow', async () => {
     assert(projects.length > 0)
   })
 
-  await it.skip('Creates a project', async () => {
+  await it('Creates a project', async () => {
     const projectResponse = await sectorFlow.createProject({
       name: `Test Project (${Date.now()})`,
       modelIds: [modelId],
