@@ -1,3 +1,4 @@
+import { isUUID } from './utilities.js';
 const apiUrl = 'https://platform.sectorflow.ai/api/v1';
 export class SectorFlow {
     #apiKey;
@@ -57,7 +58,14 @@ export class SectorFlow {
      * @returns {Promise<ChatMessageResponse>} - The responses to the messages.
      */
     async sendChatMessages(projectId, messagesRequest) {
-        const response = await fetch(`${apiUrl}/chat/${projectId}/completions`, {
+        if (!isUUID(projectId)) {
+            throw new Error(`projectId is not a valid UUID: ${projectId}`);
+        }
+        if (messagesRequest.threadId !== undefined &&
+            !isUUID(messagesRequest.threadId)) {
+            throw new Error(`threadId is not a valid UUID: ${projectId}`);
+        }
+        const response = await fetch(`${apiUrl}/chat/${projectId.toLowerCase()}/completions`, {
             method: 'post',
             headers: {
                 Authorization: `Bearer ${this.#apiKey}`,

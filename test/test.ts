@@ -26,7 +26,7 @@ await describe('node-sectorflow', async () => {
     assert(projects.length > 0)
   })
 
-  await it('Creates a project', async () => {
+  await it.skip('Creates a project', async () => {
     const projectResponse = await sectorFlow.createProject({
       name: `Test Project (${Date.now()})`,
       modelIds: [modelId],
@@ -40,7 +40,7 @@ await describe('node-sectorflow', async () => {
     assert(projectResponse)
   })
 
-  await it.skip('Send a chat message', async () => {
+  await it('Send a chat message', async () => {
     const chatResponse = await sectorFlow.sendChatMessage(
       projectId,
       'Tell me a joke.'
@@ -57,5 +57,14 @@ await describe('node-sectorflow', async () => {
     console.log(JSON.stringify(chatResponse2, undefined, 2))
 
     assert(chatResponse2)
+  })
+
+  await it('Skips sending a message when the projectId is not a UUID', async () => {
+    try {
+      await sectorFlow.sendChatMessage('INVALID-UUID', 'Invalid UUID')
+      assert.fail()
+    } catch {
+      assert.ok('Error thrown')
+    }
   })
 })

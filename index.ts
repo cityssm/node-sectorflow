@@ -4,6 +4,7 @@ import type {
   ModelResponse,
   ProjectResponse
 } from './responseTypes.js'
+import { isUUID } from './utilities.js'
 
 const apiUrl = 'https://platform.sectorflow.ai/api/v1'
 
@@ -78,14 +79,28 @@ export class SectorFlow {
     projectId: string,
     messagesRequest: ChatMessageRequest
   ): Promise<ChatMessageResponse> {
-    const response = await fetch(`${apiUrl}/chat/${projectId}/completions`, {
-      method: 'post',
-      headers: {
-        Authorization: `Bearer ${this.#apiKey}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(messagesRequest)
-    })
+    if (!isUUID(projectId)) {
+      throw new Error(`projectId is not a valid UUID: ${projectId}`)
+    }
+
+    if (
+      messagesRequest.threadId !== undefined &&
+      !isUUID(messagesRequest.threadId)
+    ) {
+      throw new Error(`threadId is not a valid UUID: ${projectId}`)
+    }
+
+    const response = await fetch(
+      `${apiUrl}/chat/${projectId.toLowerCase()}/completions`,
+      {
+        method: 'post',
+        headers: {
+          Authorization: `Bearer ${this.#apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(messagesRequest)
+      }
+    )
 
     return await response.json()
   }
