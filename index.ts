@@ -57,6 +57,16 @@ export class SectorFlow {
   async createProject(
     projectRequest: ProjectRequest
   ): Promise<ProjectResponse> {
+    if (projectRequest.modelIds.length === 0) {
+      throw new Error('No modelIds available.')
+    }
+
+    for (const modelId of projectRequest.modelIds) {
+      if (!isUUID(modelId)) {
+        throw new Error(`modelId is not a valid UUID: ${modelId}`)
+      }
+    }
+
     const response = await fetch(`${apiUrl}/projects`, {
       method: 'post',
       headers: {
