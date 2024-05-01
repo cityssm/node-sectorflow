@@ -2,6 +2,12 @@
 
 An unofficial wrapper around the [SectorFlow API](https://docs.sectorflowai.com/reference).
 
+## What is SectorFlow?
+
+From the SectorFlow documentation:
+
+> SectorFlow is an AI integration platform that simplifies and enhances the way businesses use Large Language Models (LLMs) to gain actionable insights from their data. It's designed for ease of use, offering powerful AI capabilities without requiring in-depth technical knowledge.
+
 ## Installation
 
 ```sh
