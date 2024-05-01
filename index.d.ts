@@ -9,9 +9,11 @@ export declare class SectorFlow {
     constructor(apiKey: string);
     /**
      * Retrieves the list of available LLMs.
+     * Once retrieved, they are cached to avoid additional queries.
+     * @param {boolean} forceRefresh - An optional parameter to bypass the cache.
      * @returns {Promise<ModelResponse[]>} - A list of available LLMs.
      */
-    getModels(): Promise<ModelResponse[]>;
+    getModels(forceRefresh?: boolean): Promise<ModelResponse[]>;
     /**
      * Retrieves the list of projects.
      * @returns {Promise<ProjectResponse[]>} - A list of projects.

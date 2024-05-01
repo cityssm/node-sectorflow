@@ -2,6 +2,7 @@ import { isUUID } from './utilities.js';
 const apiUrl = 'https://platform.sectorflow.ai/api/v1';
 export class SectorFlow {
     #apiKey;
+    #modals;
     /**
      * Creates a new SectorFlow API object.
      * @param {string} apiKey - The API key.
@@ -11,16 +12,21 @@ export class SectorFlow {
     }
     /**
      * Retrieves the list of available LLMs.
+     * Once retrieved, they are cached to avoid additional queries.
+     * @param {boolean} forceRefresh - An optional parameter to bypass the cache.
      * @returns {Promise<ModelResponse[]>} - A list of available LLMs.
      */
-    async getModels() {
-        const response = await fetch(`${apiUrl}/models`, {
-            method: 'get',
-            headers: {
-                Authorization: `Bearer ${this.#apiKey}`
-            }
-        });
-        return await response.json();
+    async getModels(forceRefresh = false) {
+        if (forceRefresh || this.#modals === undefined) {
+            const response = await fetch(`${apiUrl}/models`, {
+                method: 'get',
+                headers: {
+                    Authorization: `Bearer ${this.#apiKey}`
+                }
+            });
+            this.#modals = await response.json();
+        }
+        return this.#modals ?? [];
     }
     /**
      * Retrieves the list of projects.

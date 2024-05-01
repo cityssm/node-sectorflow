@@ -11,6 +11,8 @@ const apiUrl = 'https://platform.sectorflow.ai/api/v1'
 export class SectorFlow {
   readonly #apiKey: string
 
+  #modals: ModelResponse[] | undefined
+
   /**
    * Creates a new SectorFlow API object.
    * @param {string} apiKey - The API key.
@@ -21,17 +23,23 @@ export class SectorFlow {
 
   /**
    * Retrieves the list of available LLMs.
+   * Once retrieved, they are cached to avoid additional queries.
+   * @param {boolean} forceRefresh - An optional parameter to bypass the cache.
    * @returns {Promise<ModelResponse[]>} - A list of available LLMs.
    */
-  async getModels(): Promise<ModelResponse[]> {
-    const response = await fetch(`${apiUrl}/models`, {
-      method: 'get',
-      headers: {
-        Authorization: `Bearer ${this.#apiKey}`
-      }
-    })
+  async getModels(forceRefresh: boolean = false): Promise<ModelResponse[]> {
+    if (forceRefresh || this.#modals === undefined) {
+      const response = await fetch(`${apiUrl}/models`, {
+        method: 'get',
+        headers: {
+          Authorization: `Bearer ${this.#apiKey}`
+        }
+      })
 
-    return await response.json()
+      this.#modals = await response.json()
+    }
+
+    return this.#modals ?? []
   }
 
   /**
