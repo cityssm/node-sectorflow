@@ -19,6 +19,8 @@ npm install @cityssm/sectorflow
 
 ## Usage
 
+**TypeScript ready and JSDocs included for easy use!**
+
 ```javascript
 import { SectorFlow } from '@cityssm/sectorflow'
 
@@ -37,9 +39,17 @@ const firstChatResponse = await sectorFlow.sendChatMessage(
   'Tell me a joke.'
 )
 
+console.log(firstChatResponse.choices[0].choices[0].message.content)
+
+// => "Why don't scientists trust atoms? Because they make up everything!"
+
 const secondChatResponse = await sectorFlow.sendChatMessage(
   project.id,
   'Tell me another joke.',
   firstChatResponse.threadId
 )
+
+console.log(secondChatResponse.choices[0].choices[0].message.content)
+
+// => "What do dentists call their x-rays? Tooth pics!"
 ```
