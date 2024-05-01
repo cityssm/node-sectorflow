@@ -3,7 +3,7 @@ import { before, describe, it } from 'node:test'
 
 import { SectorFlow } from '../index.js'
 
-import { apiKey, modelId, projectId } from './config.js'
+import { apiKey, projectId } from './config.js'
 
 await describe('node-sectorflow', async () => {
   let sectorFlow: SectorFlow
@@ -65,7 +65,7 @@ await describe('node-sectorflow', async () => {
     try {
       await sectorFlow.createProject({
         name: `Invalid Project (${Date.now()})`,
-        modelIds: [modelId, 'xxx'],
+        modelIds: ['xxx'],
         chatHistoryType: 'USER',
         contextType: 'PRIVATE',
         sharingType: 'PRIVATE'
