@@ -5,7 +5,7 @@
   "engines": {
     "node": ">=18.0.0"
   },
-  "description": "An unofficial wrapper around the SectorFlow API.",
+  "description": "An unofficial wrapper around the SectorFlow API, allowing you to easily connect to over a dozen AI models.",
   "exports": "./index.js",
   "scripts": {
     "test": "node --test",
