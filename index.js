@@ -38,9 +38,7 @@ export class SectorFlow {
         const models = await this.getModels();
         const keywords = spaceSeparatedKeywords.toLowerCase().split(' ');
         const model = models.find((possibleModel) => {
-            const stringToSearch = (possibleModel.name +
-                ' ' +
-                possibleModel.baseModel).toLowerCase();
+            const stringToSearch = `${possibleModel.name} ${possibleModel.baseModel}`.toLowerCase();
             for (const keyword of keywords) {
                 if (!stringToSearch.includes(keyword)) {
                     return false;
