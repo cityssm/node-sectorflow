@@ -13,7 +13,9 @@
   },
   "keywords": [
     "sectorflow",
-    "ai"
+    "ai",
+    "llm",
+    "openai"
   ],
   "repository": {
     "type": "git",
