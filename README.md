@@ -29,9 +29,12 @@ import { SectorFlow } from '@cityssm/sectorflow'
 
 const sectorFlow = new SectorFlow(API_KEY)
 
+// Get the model id for ChatGPT
+const chatGPT = await sectorFlow.getModelIdByKeywords('ChatGPT')
+
 const project = await sectorFlow.createProject({
   name: `My SectorFlow Project`,
-  modelIds: [CHATGPT_MODEL_ID],
+  modelIds: [chatGPT],
   chatHistoryType: 'TEAM',
   contextType: 'SHARED',
   sharingType: 'TEAM'

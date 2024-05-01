@@ -4,6 +4,7 @@ import type {
   ModelResponse,
   ProjectResponse
 } from './responseTypes.js'
+import type { UUIDString } from './types.js'
 import { isUUID } from './utilities.js'
 
 const apiUrl = 'https://platform.sectorflow.ai/api/v1'
@@ -11,7 +12,7 @@ const apiUrl = 'https://platform.sectorflow.ai/api/v1'
 export class SectorFlow {
   readonly #apiKey: string
 
-  #modals: ModelResponse[] | undefined
+  #models: ModelResponse[] | undefined
 
   /**
    * Creates a new SectorFlow API object.
@@ -28,7 +29,7 @@ export class SectorFlow {
    * @returns {Promise<ModelResponse[]>} - A list of available LLMs.
    */
   async getModels(forceRefresh: boolean = false): Promise<ModelResponse[]> {
-    if (forceRefresh || this.#modals === undefined) {
+    if (forceRefresh || this.#models === undefined) {
       const response = await fetch(`${apiUrl}/models`, {
         method: 'get',
         headers: {
@@ -36,10 +37,46 @@ export class SectorFlow {
         }
       })
 
-      this.#modals = await response.json()
+      this.#models = await response.json()
     }
 
-    return this.#modals ?? []
+    return this.#models ?? []
+  }
+
+  /**
+   * A helper function to retrieve a model id by keywords.
+   * i.e. getModelIdByKeywords('ChatGPT')
+   * @param {string} spaceSeparatedKeywords - A string of space-separated keywords.
+   * @returns {Promise<UUIDString | undefined>} - The model id, if found.
+   */
+  async getModelIdByKeywords(
+    spaceSeparatedKeywords: string
+  ): Promise<UUIDString | undefined> {
+    const models = await this.getModels()
+
+    const keywords = spaceSeparatedKeywords.toLowerCase().split(' ')
+
+    const model = models.find((possibleModel) => {
+      const stringToSearch = (
+        possibleModel.name +
+        ' ' +
+        possibleModel.baseModel
+      ).toLowerCase()
+
+      for (const keyword of keywords) {
+        if (!stringToSearch.includes(keyword)) {
+          return false
+        }
+      }
+
+      return true
+    })
+
+    if (model === undefined) {
+      return undefined
+    }
+
+    return model.id
   }
 
   /**

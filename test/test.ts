@@ -12,7 +12,7 @@ await describe('node-sectorflow', async () => {
     sectorFlow = new SectorFlow(apiKey)
   })
 
-  await it('Gets models', async () => {
+  await it.skip('Gets models', async () => {
     console.time('1st')
     let models = await sectorFlow.getModels()
     console.timeEnd('1st')
@@ -29,6 +29,12 @@ await describe('node-sectorflow', async () => {
     assert(models.length > 0)
   })
 
+  await it('Gets the "ChatGPT" model id', async () => {
+    const modelId = await sectorFlow.getModelIdByKeywords('chat gpt')
+    console.log(modelId)
+    assert(modelId)
+  })
+
   await it.skip('Gets projects', async () => {
     const projects = await sectorFlow.getProjects()
 
@@ -38,6 +44,10 @@ await describe('node-sectorflow', async () => {
   })
 
   await it.skip('Creates a project', async () => {
+    const modelId = await sectorFlow.getModelIdByKeywords('amazon titan')
+
+    assert(modelId)
+
     const projectResponse = await sectorFlow.createProject({
       name: `Test Project (${Date.now()})`,
       modelIds: [modelId],

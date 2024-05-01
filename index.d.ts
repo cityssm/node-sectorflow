@@ -1,5 +1,6 @@
 import type { ChatMessageRequest, ProjectRequest } from './requestTypes.js';
 import type { ChatMessageResponse, ModelResponse, ProjectResponse } from './responseTypes.js';
+import type { UUIDString } from './types.js';
 export declare class SectorFlow {
     #private;
     /**
@@ -14,6 +15,13 @@ export declare class SectorFlow {
      * @returns {Promise<ModelResponse[]>} - A list of available LLMs.
      */
     getModels(forceRefresh?: boolean): Promise<ModelResponse[]>;
+    /**
+     * A helper function to retrieve a model id by keywords.
+     * i.e. getModelIdByKeywords('ChatGPT')
+     * @param {string} spaceSeparatedKeywords - A string of space-separated keywords.
+     * @returns {Promise<UUIDString | undefined>} - The model id, if found.
+     */
+    getModelIdByKeywords(spaceSeparatedKeywords: string): Promise<UUIDString | undefined>;
     /**
      * Retrieves the list of projects.
      * @returns {Promise<ProjectResponse[]>} - A list of projects.
