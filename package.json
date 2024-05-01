@@ -15,7 +15,10 @@
     "sectorflow",
     "ai",
     "llm",
-    "openai"
+    "language-model",
+    "openai",
+    "claude",
+    "chatbot"
   ],
   "repository": {
     "type": "git",
