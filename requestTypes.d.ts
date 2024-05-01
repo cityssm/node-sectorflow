@@ -12,4 +12,6 @@ export interface ChatMessageRequest {
         content: string;
     }>;
     threadId?: string;
+    /** Undocumented */
+    models?: string[];
 }

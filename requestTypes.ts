@@ -11,4 +11,7 @@ export interface ProjectRequest {
 export interface ChatMessageRequest {
   messages: Array<{ role: 'user'; content: string }>
   threadId?: string
+
+  /** Undocumented */
+  models?: string[]
 }
