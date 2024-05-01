@@ -28,6 +28,21 @@ await describe('node-sectorflow', async () => {
         console.log(projectResponse);
         assert(projectResponse);
     });
+    await it('Skips creating a project when the modelIds are not all UUIDs', async () => {
+        try {
+            await sectorFlow.createProject({
+                name: `Invalid Project (${Date.now()})`,
+                modelIds: [modelId, 'xxx'],
+                chatHistoryType: 'USER',
+                contextType: 'PRIVATE',
+                sharingType: 'PRIVATE'
+            });
+            assert.fail();
+        }
+        catch {
+            assert.ok('Error thrown');
+        }
+    });
     await it('Send a chat message', async () => {
         const chatResponse = await sectorFlow.sendChatMessage(projectId, 'Tell me a joke.');
         console.log(JSON.stringify(chatResponse, undefined, 2));
