@@ -49,7 +49,7 @@ export interface ChatMessageResponse {
                 role: 'assistant' | string;
                 content: string;
             };
-            finishReason: 'stop' | string;
+            finishReason: 'stop' | 'error' | string;
         }>;
     }>;
     usage: {
