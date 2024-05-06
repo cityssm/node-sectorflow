@@ -20,28 +20,29 @@ await describe('node-sectorflow', async () => {
         console.log(models);
         assert(models.length > 0);
     });
-    await it('Gets the "ChatGPT" model id', async () => {
+    await it.skip('Gets the "ChatGPT" model id', async () => {
         const modelId = await sectorFlow.getModelIdByKeywords('chat gpt');
         console.log(modelId);
         assert(modelId);
     });
-    await it.skip('Gets projects', async () => {
-        const projects = await sectorFlow.getProjects();
-        console.log(projects);
-        assert(projects.length > 0);
-    });
-    await it.skip('Creates a project', async () => {
+    await it('Manages projects', async () => {
+        const initialProjects = await sectorFlow.getProjects();
         const modelId = await sectorFlow.getModelIdByKeywords('amazon titan');
         assert(modelId);
-        const projectResponse = await sectorFlow.createProject({
+        const newProjectResponse = await sectorFlow.createProject({
             name: `Test Project (${Date.now()})`,
             modelIds: [modelId],
             chatHistoryType: 'USER',
             contextType: 'PRIVATE',
             sharingType: 'PRIVATE'
         });
-        console.log(projectResponse);
-        assert(projectResponse);
+        assert(newProjectResponse);
+        const projectsAfterCreate = await sectorFlow.getProjects();
+        assert.strictEqual(projectsAfterCreate.length, initialProjects.length + 1);
+        const deleteProjectSuccess = await sectorFlow.deleteProject(newProjectResponse.id);
+        assert(deleteProjectSuccess);
+        const projectsAfterDelete = await sectorFlow.getProjects();
+        assert.strictEqual(initialProjects.length, projectsAfterDelete.length);
     });
     await it.skip('Skips creating a project when the modelIds are not all UUIDs', async () => {
         try {

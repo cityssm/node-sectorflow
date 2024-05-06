@@ -89,6 +89,24 @@ export class SectorFlow {
         return await response.json();
     }
     /**
+     * Deletes a project.
+     * @param {string} projectId - The project id.
+     * @returns {Promise<boolean>} - True if the project was deleted successfully.
+     */
+    async deleteProject(projectId) {
+        if (!isUUID(projectId)) {
+            throw new Error(`projectId is not a valid UUID: ${projectId}`);
+        }
+        const response = await fetch(`${apiUrl}/projects/${projectId.toLowerCase()}`, {
+            method: 'delete',
+            headers: {
+                Authorization: `Bearer ${this.#apiKey}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        return response.ok;
+    }
+    /**
      * Sends messages to a project, returning the responses.
      * @param {string} projectId - The project id.
      * @param {ChatMessageRequest} messagesRequest - The messages request.

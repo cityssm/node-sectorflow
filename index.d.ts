@@ -34,6 +34,12 @@ export declare class SectorFlow {
      */
     createProject(projectRequest: ProjectRequest): Promise<ProjectResponse>;
     /**
+     * Deletes a project.
+     * @param {string} projectId - The project id.
+     * @returns {Promise<boolean>} - True if the project was deleted successfully.
+     */
+    deleteProject(projectId: string): Promise<boolean>;
+    /**
      * Sends messages to a project, returning the responses.
      * @param {string} projectId - The project id.
      * @param {ChatMessageRequest} messagesRequest - The messages request.
