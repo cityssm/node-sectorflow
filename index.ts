@@ -1,8 +1,17 @@
-import type { ChatMessageRequest, ProjectRequest } from './requestTypes.js'
+import { randomUUID } from 'node:crypto'
+import fs from 'node:fs/promises'
+
+import type {
+  ChatMessageRequest,
+  ChatMessageRequestRagSettings,
+  ProjectRequest
+} from './requestTypes.js'
 import type {
   ChatMessageResponse,
+  CollectionResponse,
   ModelResponse,
-  ProjectResponse
+  ProjectResponse,
+  UploadResponse
 } from './responseTypes.js'
 import type { UUIDString } from './types.js'
 import { isUUID } from './utilities.js'
@@ -146,6 +155,64 @@ export class SectorFlow {
   }
 
   /**
+   * Uploads a file.
+   * @param {string} projectId - The project id.
+   * @param {string} filePath - The file path.
+   * @returns {Promise<UploadResponse>} - The upload response.
+   */
+  async uploadFile(
+    projectId: string,
+    filePath: string
+  ): Promise<UploadResponse> {
+    if (!isUUID(projectId)) {
+      throw new Error(`projectId is not a valid UUID: ${projectId}`)
+    }
+
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
+    const fileBlob = new Blob([await fs.readFile(filePath)])
+
+    const collectionName = randomUUID()
+    const fileName = filePath.split(/[/\\]/).at(-1)
+
+    const formData = new FormData()
+    formData.append('file', fileBlob, fileName)
+    formData.append('collection', collectionName)
+
+    const response = await fetch(
+      `${apiUrl}/chat/${projectId.toLowerCase()}/add-file`,
+      {
+        method: 'post',
+        headers: {
+          Authorization: `Bearer ${this.#apiKey}`
+        },
+        body: formData
+      }
+    )
+
+    const threadJson: Partial<UploadResponse> = await response.json()
+
+    threadJson.collectionName = collectionName
+    threadJson.fileName = fileName
+
+    return threadJson as UploadResponse
+  }
+
+  async getCollections(projectId: string): Promise<CollectionResponse[]> {
+    if (!isUUID(projectId)) {
+      throw new Error(`projectId is not a valid UUID: ${projectId}`)
+    }
+
+    const response = await fetch(`${apiUrl}/files/${projectId}/collections`, {
+      method: 'get',
+      headers: {
+        Authorization: `Bearer ${this.#apiKey}`
+      }
+    })
+
+    return await response.json()
+  }
+
+  /**
    * Sends messages to a project, returning the responses.
    * @param {string} projectId - The project id.
    * @param {ChatMessageRequest} messagesRequest - The messages request.
@@ -191,11 +258,29 @@ export class SectorFlow {
   async sendChatMessage(
     projectId: string,
     message: string,
-    threadId?: string
+    options?: {
+      threadId?: string
+      collectionName?: string
+      fileName?: string
+    }
   ): Promise<ChatMessageResponse> {
+    let ragSettings: ChatMessageRequestRagSettings | undefined
+
+    if (
+      options?.collectionName !== undefined &&
+      options.fileName !== undefined
+    ) {
+      ragSettings = {
+        collectionName: options.collectionName,
+        fileNames: [options.fileName],
+        summarize: false
+      }
+    }
+
     return await this.sendChatMessages(projectId, {
       messages: [{ role: 'user', content: message }],
-      threadId
+      threadId: options?.threadId,
+      ragSettings
     })
   }
 }

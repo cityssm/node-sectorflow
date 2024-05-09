@@ -1,5 +1,5 @@
 import type { ChatMessageRequest, ProjectRequest } from './requestTypes.js';
-import type { ChatMessageResponse, ModelResponse, ProjectResponse } from './responseTypes.js';
+import type { ChatMessageResponse, CollectionResponse, ModelResponse, ProjectResponse, UploadResponse } from './responseTypes.js';
 import type { UUIDString } from './types.js';
 export declare class SectorFlow {
     #private;
@@ -40,6 +40,14 @@ export declare class SectorFlow {
      */
     deleteProject(projectId: string): Promise<boolean>;
     /**
+     * Uploads a file.
+     * @param {string} projectId - The project id.
+     * @param {string} filePath - The file path.
+     * @returns {Promise<UploadResponse>} - The upload response.
+     */
+    uploadFile(projectId: string, filePath: string): Promise<UploadResponse>;
+    getCollections(projectId: string): Promise<CollectionResponse[]>;
+    /**
      * Sends messages to a project, returning the responses.
      * @param {string} projectId - The project id.
      * @param {ChatMessageRequest} messagesRequest - The messages request.
@@ -53,6 +61,10 @@ export declare class SectorFlow {
      * @param {string} threadId - The optional thread id, to continue a chain of messages.
      * @returns {Promise<ChatMessageResponse>} - The responses to the message.
      */
-    sendChatMessage(projectId: string, message: string, threadId?: string): Promise<ChatMessageResponse>;
+    sendChatMessage(projectId: string, message: string, options?: {
+        threadId?: string;
+        collectionName?: string;
+        fileName?: string;
+    }): Promise<ChatMessageResponse>;
 }
 export type { ChatMessageResponse, ModelResponse, ProjectResponse } from './responseTypes.js';

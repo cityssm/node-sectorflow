@@ -1,6 +1,6 @@
 {
   "name": "@cityssm/sectorflow",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "type": "module",
   "engines": {
     "node": ">=18.0.0"
@@ -31,7 +31,7 @@
   },
   "homepage": "https://github.com/cityssm/node-sectorflow#readme",
   "devDependencies": {
-    "@types/node": "^20.12.8",
+    "@types/node": "^20.12.11",
     "eslint-config-cityssm": "^2.0.1"
   }
 }

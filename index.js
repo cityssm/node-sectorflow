@@ -1,3 +1,5 @@
+import { randomUUID } from 'node:crypto';
+import fs from 'node:fs/promises';
 import { isUUID } from './utilities.js';
 const apiUrl = 'https://platform.sectorflow.ai/api/v1';
 export class SectorFlow {
@@ -107,6 +109,47 @@ export class SectorFlow {
         return response.ok;
     }
     /**
+     * Uploads a file.
+     * @param {string} projectId - The project id.
+     * @param {string} filePath - The file path.
+     * @returns {Promise<UploadResponse>} - The upload response.
+     */
+    async uploadFile(projectId, filePath) {
+        if (!isUUID(projectId)) {
+            throw new Error(`projectId is not a valid UUID: ${projectId}`);
+        }
+        // eslint-disable-next-line security/detect-non-literal-fs-filename
+        const fileBlob = new Blob([await fs.readFile(filePath)]);
+        const collectionName = randomUUID();
+        const fileName = filePath.split(/[/\\]/).at(-1);
+        const formData = new FormData();
+        formData.append('file', fileBlob, fileName);
+        formData.append('collection', collectionName);
+        const response = await fetch(`${apiUrl}/chat/${projectId.toLowerCase()}/add-file`, {
+            method: 'post',
+            headers: {
+                Authorization: `Bearer ${this.#apiKey}`
+            },
+            body: formData
+        });
+        const threadJson = await response.json();
+        threadJson.collectionName = collectionName;
+        threadJson.fileName = fileName;
+        return threadJson;
+    }
+    async getCollections(projectId) {
+        if (!isUUID(projectId)) {
+            throw new Error(`projectId is not a valid UUID: ${projectId}`);
+        }
+        const response = await fetch(`${apiUrl}/files/${projectId}/collections`, {
+            method: 'get',
+            headers: {
+                Authorization: `Bearer ${this.#apiKey}`
+            }
+        });
+        return await response.json();
+    }
+    /**
      * Sends messages to a project, returning the responses.
      * @param {string} projectId - The project id.
      * @param {ChatMessageRequest} messagesRequest - The messages request.
@@ -137,10 +180,20 @@ export class SectorFlow {
      * @param {string} threadId - The optional thread id, to continue a chain of messages.
      * @returns {Promise<ChatMessageResponse>} - The responses to the message.
      */
-    async sendChatMessage(projectId, message, threadId) {
+    async sendChatMessage(projectId, message, options) {
+        let ragSettings;
+        if (options?.collectionName !== undefined &&
+            options.fileName !== undefined) {
+            ragSettings = {
+                collectionName: options.collectionName,
+                fileNames: [options.fileName],
+                summarize: false
+            };
+        }
         return await this.sendChatMessages(projectId, {
             messages: [{ role: 'user', content: message }],
-            threadId
+            threadId: options?.threadId,
+            ragSettings
         });
     }
 }

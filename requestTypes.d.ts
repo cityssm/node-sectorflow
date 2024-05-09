@@ -14,4 +14,10 @@ export interface ChatMessageRequest {
     threadId?: string;
     /** Undocumented */
     models?: string[];
+    ragSettings?: ChatMessageRequestRagSettings;
+}
+export interface ChatMessageRequestRagSettings {
+    collectionName: string;
+    fileNames: string[];
+    summarize: false;
 }

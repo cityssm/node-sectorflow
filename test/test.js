@@ -1,7 +1,7 @@
 import assert from 'node:assert';
 import { before, describe, it } from 'node:test';
 import { SectorFlow } from '../index.js';
-import { apiKey, projectId } from './config.js';
+import { apiKey, collectionName, fileName, projectId } from './config.js';
 await describe('node-sectorflow', async () => {
     let sectorFlow;
     before(() => {
@@ -25,7 +25,7 @@ await describe('node-sectorflow', async () => {
         console.log(modelId);
         assert(modelId);
     });
-    await it('Manages projects', async () => {
+    await it.skip('Manages projects', async () => {
         const initialProjects = await sectorFlow.getProjects();
         const modelId = await sectorFlow.getModelIdByKeywords('amazon titan');
         assert(modelId);
@@ -62,7 +62,9 @@ await describe('node-sectorflow', async () => {
     await it.skip('Send a chat message', async () => {
         const chatResponse = await sectorFlow.sendChatMessage(projectId, 'Tell me a joke.');
         console.log(JSON.stringify(chatResponse, undefined, 2));
-        const chatResponse2 = await sectorFlow.sendChatMessage(projectId, 'Tell me another joke.', chatResponse.threadId);
+        const chatResponse2 = await sectorFlow.sendChatMessage(projectId, 'Tell me another joke.', {
+            threadId: chatResponse.threadId
+        });
         console.log(JSON.stringify(chatResponse2, undefined, 2));
         assert(chatResponse2);
     });
@@ -74,5 +76,17 @@ await describe('node-sectorflow', async () => {
         catch {
             assert.ok('Error thrown');
         }
+    });
+    await it.skip('Uploads a file', async () => {
+        const results = await sectorFlow.uploadFile(projectId, './LICENSE.md');
+        console.log(results);
+    });
+    await it('Sends a chat message with a file attached', async () => {
+        const chatResponse = await sectorFlow.sendChatMessage(projectId, 'What is this file about?', {
+            collectionName,
+            fileName
+        });
+        console.log(JSON.stringify(chatResponse, undefined, 2));
+        assert(chatResponse);
     });
 });

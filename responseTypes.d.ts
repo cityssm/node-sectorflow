@@ -49,7 +49,14 @@ export interface ChatMessageResponse {
                 role: 'assistant' | string;
                 content: string;
             };
-            finishReason: 'stop' | 'error' | string;
+            sources?: Array<{
+                id: UUIDString;
+                sourceName: string;
+                text: string;
+                pageNum: number;
+                matchScore: number;
+            }>;
+            finishReason?: 'stop' | 'error' | string;
         }>;
     }>;
     usage: {
@@ -58,4 +65,25 @@ export interface ChatMessageResponse {
         totalTokens: number;
         modelUsage: unknown[];
     };
+}
+export interface CollectionResponse {
+    id: number;
+    externalId: string;
+    name: string;
+    collectionType: 'project';
+    created: DateTimeString;
+    files: Array<{
+        id: UUIDString;
+        externalId: string;
+        bytes: number;
+        created: DateTimeString;
+        filename: string;
+        mimeType: string;
+        purpose: 'assistants';
+    }>;
+}
+export interface UploadResponse {
+    threadId: UUIDString;
+    collectionName: string;
+    fileName: string;
 }
