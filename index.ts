@@ -281,7 +281,7 @@ export class SectorFlow {
     }
 
     return await this.sendChatMessages(projectId, {
-      messages: [{ role: 'user', content: message }],
+      messages: [{ role: 'user', content: message.replaceAll(/ {2,}/g, ' ') }],
       threadId: options?.threadId,
       ragSettings
     })
