@@ -252,7 +252,10 @@ export class SectorFlow {
    * Sends a message to a project, returning the responses.
    * @param {string} projectId - The project id.
    * @param {string} message - The message.
-   * @param {string} threadId - The optional thread id, to continue a chain of messages.
+   * @param {object} options - Optional.
+   * @param {string} options.threadId - The optional thread id, to continue a chain of messages.
+   * @param {string} options.collectionName - The optional SectorFlow collection name that contains the file. Used with the fileName option.
+   * @param {string} options.fileName - The optional SectorFlow file name. Used with the collectionName option.
    * @returns {Promise<ChatMessageResponse>} - The responses to the message.
    */
   async sendChatMessage(
