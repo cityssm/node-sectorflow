@@ -184,6 +184,7 @@ export class SectorFlow {
      * @returns {Promise<ChatMessageResponse>} - The responses to the message.
      */
     async sendChatMessage(projectId, message, options) {
+        let cleanMessage = message;
         let ragSettings;
         if (options?.collectionName !== undefined &&
             options.fileName !== undefined) {
@@ -192,9 +193,10 @@ export class SectorFlow {
                 fileNames: [options.fileName],
                 summarize: false
             };
+            cleanMessage = cleanMessage.replaceAll(/ {2,}/g, ' ');
         }
         return await this.sendChatMessages(projectId, {
-            messages: [{ role: 'user', content: message.replaceAll(/ {2,}/g, ' ') }],
+            messages: [{ role: 'user', content: cleanMessage }],
             threadId: options?.threadId,
             ragSettings
         });

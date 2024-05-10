@@ -267,6 +267,7 @@ export class SectorFlow {
       fileName?: string
     }
   ): Promise<ChatMessageResponse> {
+    let cleanMessage = message
     let ragSettings: ChatMessageRequestRagSettings | undefined
 
     if (
@@ -278,10 +279,12 @@ export class SectorFlow {
         fileNames: [options.fileName],
         summarize: false
       }
+
+      cleanMessage = cleanMessage.replaceAll(/ {2,}/g, ' ')
     }
 
     return await this.sendChatMessages(projectId, {
-      messages: [{ role: 'user', content: message.replaceAll(/ {2,}/g, ' ') }],
+      messages: [{ role: 'user', content: cleanMessage }],
       threadId: options?.threadId,
       ragSettings
     })
