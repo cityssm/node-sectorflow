@@ -52,7 +52,9 @@ console.log(firstChatResponse.choices[0].choices[0].message.content)
 const secondChatResponse = await sectorFlow.sendChatMessage(
   project.id,
   'Tell me another joke.',
-  firstChatResponse.threadId
+  {
+    threadId: firstChatResponse.threadId
+  }
 )
 
 console.log(secondChatResponse.choices[0].choices[0].message.content)
