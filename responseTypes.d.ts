@@ -1,4 +1,12 @@
 import type { ChatHistoryType, ContextType, DateTimeString, SharingType, UUIDString } from './types.js';
+interface SectorFlowUsage {
+    promptTokens: number;
+    completionTokes: number;
+    totalTokens: number;
+    credits: number;
+    responseTimeMs: number;
+    modelUsage: unknown[];
+}
 export interface ModelResponse {
     id: UUIDString;
     name: string;
@@ -7,8 +15,12 @@ export interface ModelResponse {
     contextWindow: number;
     chatCredits: number;
     active: boolean;
+    internalUseOnly: boolean;
     created: DateTimeString;
     updated: DateTimeString;
+    usesSystemPrompts: boolean;
+    imageGen: boolean;
+    hasVision: boolean;
     settingsAvailable: Array<{
         fieldName: string;
         name: string;
@@ -19,6 +31,8 @@ export interface ModelResponse {
         wrapperName: string;
         value: string;
     };
+    modelRating: number;
+    description: string;
 }
 export interface ProjectResponse {
     id: string;
@@ -38,13 +52,13 @@ export interface ChatMessageResponse {
     chatId: UUIDString;
     choices: Array<{
         modelId: UUIDString;
-        name: string;
+        modelName: string;
         baseModel: string;
         icon: string;
         choices: Array<{
-            id: UUIDString;
             modelId: UUIDString;
             index: number;
+            active: boolean;
             message: {
                 role: 'assistant' | string;
                 content: string;
@@ -58,13 +72,9 @@ export interface ChatMessageResponse {
             }>;
             finishReason?: 'stop' | 'error' | string;
         }>;
+        usage: SectorFlowUsage;
     }>;
-    usage: {
-        promptTokens: number;
-        completionTokes: number;
-        totalTokens: number;
-        modelUsage: unknown[];
-    };
+    usage: SectorFlowUsage;
 }
 export interface CollectionResponse {
     id: number;
@@ -87,3 +97,4 @@ export interface UploadResponse {
     collectionName: string;
     fileName: string;
 }
+export {};
