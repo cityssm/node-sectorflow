@@ -7,16 +7,16 @@ export class SectorFlow {
     #models;
     /**
      * Creates a new SectorFlow API object.
-     * @param {string} apiKey - The API key.
+     * @param apiKey - The API key.
      */
     constructor(apiKey) {
         this.#apiKey = apiKey;
     }
     /**
      * Retrieves the list of available LLMs.
-     * Once retrieved, they are cached to avoid additional queries.
-     * @param {boolean} forceRefresh - An optional parameter to bypass the cache.
-     * @returns {Promise<ModelResponse[]>} - A list of available LLMs.
+     * Once retrieved, they are cached to avoid added queries.
+     * @param forceRefresh - An optional parameter to bypass the cache.
+     * @returns A list of available LLMs.
      */
     async getModels(forceRefresh = false) {
         if (forceRefresh || this.#models === undefined) {
@@ -33,8 +33,8 @@ export class SectorFlow {
     /**
      * A helper function to retrieve a model id by keywords.
      * i.e. getModelIdByKeywords('ChatGPT')
-     * @param {string} spaceSeparatedKeywords - A string of space-separated keywords.
-     * @returns {Promise<UUIDString | undefined>} - The model id, if found.
+     * @param spaceSeparatedKeywords - A string of space-separated keywords.
+     * @returns - The model id, if found.
      */
     async getModelIdByKeywords(spaceSeparatedKeywords) {
         const models = await this.getModels();
@@ -55,7 +55,7 @@ export class SectorFlow {
     }
     /**
      * Retrieves the list of projects.
-     * @returns {Promise<ProjectResponse[]>} - A list of projects.
+     * @returns A list of projects.
      */
     async getProjects() {
         const response = await fetch(`${apiUrl}/projects`, {
@@ -68,8 +68,8 @@ export class SectorFlow {
     }
     /**
      * Creates a new project.
-     * @param {ProjectRequest} projectRequest - The settings for the new project.
-     * @returns {Promise<ProjectResponse>} - The new project.
+     * @param projectRequest - The settings for the new project.
+     * @returns The new project.
      */
     async createProject(projectRequest) {
         if (projectRequest.modelIds.length === 0) {
@@ -92,8 +92,8 @@ export class SectorFlow {
     }
     /**
      * Deletes a project.
-     * @param {string} projectId - The project id.
-     * @returns {Promise<boolean>} - True if the project was deleted successfully.
+     * @param projectId - The project id.
+     * @returns `true` if the project was deleted.
      */
     async deleteProject(projectId) {
         if (!isUUID(projectId)) {
@@ -110,9 +110,9 @@ export class SectorFlow {
     }
     /**
      * Uploads a file.
-     * @param {string} projectId - The project id.
-     * @param {string} filePath - The file path.
-     * @returns {Promise<UploadResponse>} - The upload response.
+     * @param projectId - The project id.
+     * @param filePath - The file path.
+     * @returns The upload response.
      */
     async uploadFile(projectId, filePath) {
         if (!isUUID(projectId)) {
@@ -151,9 +151,9 @@ export class SectorFlow {
     }
     /**
      * Sends messages to a project, returning the responses.
-     * @param {string} projectId - The project id.
-     * @param {ChatMessageRequest} messagesRequest - The messages request.
-     * @returns {Promise<ChatMessageResponse>} - The responses to the messages.
+     * @param projectId - The project id.
+     * @param messagesRequest - The messages request.
+     * @returns The responses to the messages.
      */
     async sendChatMessages(projectId, messagesRequest) {
         if (!isUUID(projectId)) {
@@ -175,13 +175,13 @@ export class SectorFlow {
     }
     /**
      * Sends a message to a project, returning the responses.
-     * @param {string} projectId - The project id.
-     * @param {string} message - The message.
-     * @param {object} options - Optional.
-     * @param {string} options.threadId - The optional thread id, to continue a chain of messages.
-     * @param {string} options.collectionName - The optional SectorFlow collection name that contains the file. Used with the fileName option.
-     * @param {string} options.fileName - The optional SectorFlow file name. Used with the collectionName option.
-     * @returns {Promise<ChatMessageResponse>} - The responses to the message.
+     * @param projectId - The project id.
+     * @param message - The message.
+     * @param options - Optional.
+     * @param options.threadId - The optional thread id, to continue a chain of messages.
+     * @param options.collectionName - The optional SectorFlow collection name that contains the file. Used with the fileName option.
+     * @param options.fileName - The optional SectorFlow file name. Used with the collectionName option.
+     * @returns The responses to the message.
      */
     async sendChatMessage(projectId, message, options) {
         let cleanMessage = message;
