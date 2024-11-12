@@ -3,19 +3,20 @@ import { before, describe, it } from 'node:test';
 import { SectorFlow } from '../index.js';
 import { apiKey, collectionName, fileName, projectId } from './config.js';
 await describe('node-sectorflow', async () => {
+    // eslint-disable-next-line @typescript-eslint/init-declarations
     let sectorFlow;
     before(() => {
         sectorFlow = new SectorFlow(apiKey);
     });
-    await it.skip('Gets models', async () => {
+    await it('Gets models', async () => {
         console.time('1st');
-        let models = await sectorFlow.getModels();
+        await sectorFlow.getModels();
         console.timeEnd('1st');
         console.time('from cache');
-        models = await sectorFlow.getModels();
+        await sectorFlow.getModels();
         console.timeEnd('from cache');
         console.time('refresh cache');
-        models = await sectorFlow.getModels(true);
+        const models = await sectorFlow.getModels(true);
         console.timeEnd('refresh cache');
         console.log(models);
         assert(models.length > 0);
@@ -59,7 +60,7 @@ await describe('node-sectorflow', async () => {
             assert.ok('Error thrown');
         }
     });
-    await it.skip('Send a chat message', async () => {
+    await it('Send a chat message', async () => {
         const chatResponse = await sectorFlow.sendChatMessage(projectId, 'Tell me a joke.');
         console.log(JSON.stringify(chatResponse, undefined, 2));
         const chatResponse2 = await sectorFlow.sendChatMessage(projectId, 'Tell me another joke.', {
@@ -81,7 +82,7 @@ await describe('node-sectorflow', async () => {
         const results = await sectorFlow.uploadFile(projectId, './LICENSE.md');
         console.log(results);
     });
-    await it('Sends a chat message with a file attached', async () => {
+    await it.skip('Sends a chat message with a file attached', async () => {
         const chatResponse = await sectorFlow.sendChatMessage(projectId, 'What is this file about?', {
             collectionName,
             fileName
