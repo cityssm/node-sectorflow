@@ -185,6 +185,7 @@ export class SectorFlow {
      */
     async sendChatMessage(projectId, message, options) {
         let cleanMessage = message;
+        // eslint-disable-next-line @typescript-eslint/init-declarations
         let ragSettings;
         if (options?.collectionName !== undefined &&
             options.fileName !== undefined) {

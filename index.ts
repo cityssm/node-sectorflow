@@ -268,6 +268,8 @@ export class SectorFlow {
     }
   ): Promise<ChatMessageResponse> {
     let cleanMessage = message
+    
+    // eslint-disable-next-line @typescript-eslint/init-declarations
     let ragSettings: ChatMessageRequestRagSettings | undefined
 
     if (
