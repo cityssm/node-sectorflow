@@ -32,7 +32,7 @@
   "homepage": "https://github.com/cityssm/node-sectorflow#readme",
   "devDependencies": {
     "@types/node": "^22.9.0",
-    "eslint-config-cityssm": "^15.1.0",
+    "eslint-config-cityssm": "^16.0.0",
     "prettier-config-cityssm": "^1.0.0"
   }
 }
