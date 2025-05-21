@@ -1,4 +1,4 @@
-import { type UUIDString } from './types.js';
+import type { UUIDString } from './types.js';
 /**
  * Tests a string to see if it is a valid UUID.
  * @param {string} possibleUUID - A possible UUID.

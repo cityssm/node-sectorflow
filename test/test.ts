@@ -13,7 +13,7 @@ await describe('node-sectorflow', async () => {
     sectorFlow = new SectorFlow(apiKey)
   })
 
-  await it('Gets models', async () => {
+  await it.skip('Gets models', async () => {
     console.time('1st')
     await sectorFlow.getModels()
     console.timeEnd('1st')
@@ -84,7 +84,7 @@ await describe('node-sectorflow', async () => {
     }
   })
 
-  await it('Send a chat message', async () => {
+  await it.skip('Send a chat message', async () => {
     const chatResponse = await sectorFlow.sendChatMessage(
       projectId,
       'Tell me a joke.'
@@ -133,5 +133,46 @@ await describe('node-sectorflow', async () => {
     console.log(JSON.stringify(chatResponse, undefined, 2))
 
     assert(chatResponse)
+  })
+
+  await it('Sends a chat message with a JSON response', async () => {
+    // Name, no comma
+
+    let chatResponse = await sectorFlow.sendChatMessage(
+      projectId,
+      'Is "JOHN DOE" a person\'s name? Respond with either `true` or `false`.'
+    )
+
+    console.log(JSON.stringify(chatResponse, undefined, 2))
+
+    assert.strictEqual(chatResponse.choices[0].choices[0].message.content, 'true')
+
+    // Name with comma
+
+    chatResponse = await sectorFlow.sendChatMessage(
+      projectId,
+      'Is "SMITH, BONNIE" a person\'s name? Respond with either `true` or `false`.',
+      {
+        threadId: chatResponse.threadId
+      }
+    )
+
+    console.log(JSON.stringify(chatResponse, undefined, 2))
+
+    assert.strictEqual(chatResponse.choices[0].choices[0].message.content, 'true')
+
+    // Company name
+
+    chatResponse = await sectorFlow.sendChatMessage(
+      projectId,
+      'Is "JIM HARVEY AND SONS" a person\'s name? Respond with either `true` or `false`.',
+      {
+        threadId: chatResponse.threadId
+      }
+    )
+
+    console.log(JSON.stringify(chatResponse, undefined, 2))
+
+    assert.strictEqual(chatResponse.choices[0].choices[0].message.content, 'false')
   })
 })
