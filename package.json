@@ -31,8 +31,8 @@
   },
   "homepage": "https://github.com/cityssm/node-sectorflow#readme",
   "devDependencies": {
-    "@types/node": "^22.9.0",
-    "eslint-config-cityssm": "^15.1.0",
+    "@types/node": "^22.15.21",
+    "eslint-config-cityssm": "^23.0.1",
     "prettier-config-cityssm": "^1.0.0"
   }
 }
