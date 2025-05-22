@@ -2,7 +2,6 @@
 
 [![DeepSource](https://app.deepsource.com/gh/cityssm/node-sectorflow.svg/?label=active+issues&show_trend=true&token=JNfvxWju1bt6LN1oizyHvJ2Q)](https://app.deepsource.com/gh/cityssm/node-sectorflow/)
 
-
 An unofficial wrapper around the [SectorFlow API](https://docs.sectorflowai.com/reference),
 allowing you to easily connect to [over a dozen AI models](https://docs.sectorflowai.com/docs/available-models).
 
