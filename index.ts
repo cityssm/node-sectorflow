@@ -46,7 +46,7 @@ export class SectorFlow {
         }
       })
 
-      this.#models = await response.json() as ModelResponse[] | undefined
+      this.#models = (await response.json()) as ModelResponse[] | undefined
     }
 
     return this.#models ?? []
@@ -97,7 +97,7 @@ export class SectorFlow {
       }
     })
 
-    return await response.json() as WorkspaceResponse[]
+    return (await response.json()) as WorkspaceResponse[]
   }
 
   /**
@@ -127,7 +127,7 @@ export class SectorFlow {
       body: JSON.stringify(workspaceRequest)
     })
 
-    return await response.json() as WorkspaceResponse
+    return (await response.json()) as WorkspaceResponse
   }
 
   /**
@@ -189,7 +189,7 @@ export class SectorFlow {
       }
     )
 
-    const threadJson = await response.json() as Partial<UploadResponse>
+    const threadJson = (await response.json()) as Partial<UploadResponse>
 
     threadJson.collectionName = collectionName
     threadJson.fileName = fileName
@@ -209,7 +209,7 @@ export class SectorFlow {
       }
     })
 
-    return await response.json() as CollectionResponse[]
+    return (await response.json()) as CollectionResponse[]
   }
 
   /**
@@ -245,7 +245,7 @@ export class SectorFlow {
       }
     )
 
-    return await response.json() as ChatMessageResponse
+    return (await response.json()) as ChatMessageResponse
   }
 
   /**
@@ -268,7 +268,7 @@ export class SectorFlow {
     }
   ): Promise<ChatMessageResponse> {
     let cleanMessage = message
-    
+
     // eslint-disable-next-line @typescript-eslint/init-declarations
     let ragSettings: ChatMessageRequestRagSettings | undefined
 
@@ -298,3 +298,5 @@ export type {
   ModelResponse,
   WorkspaceResponse
 } from './responseTypes.js'
+
+export * as wizards from './wizards.js'

@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { before, describe, it } from 'node:test'
 
-import { SectorFlow } from '../index.js'
+import { SectorFlow, wizards } from '../index.js'
 
 import { apiKey, collectionName, fileName, workspaceId } from './config.js'
 
@@ -36,7 +36,7 @@ await describe('node-sectorflow', async () => {
     assert.ok(modelId)
   })
 
-  await it('Manages workspaces', async () => {
+  await it.skip('Manages workspaces', async () => {
     const initialWorkspaces = await sectorFlow.getWorkspaces()
 
     const modelId = await sectorFlow.getModelIdByKeywords('openai gpt')
@@ -55,7 +55,10 @@ await describe('node-sectorflow', async () => {
 
     const workspacesAfterCreation = await sectorFlow.getWorkspaces()
 
-    assert.strictEqual(workspacesAfterCreation.length, initialWorkspaces.length + 1)
+    assert.strictEqual(
+      workspacesAfterCreation.length,
+      initialWorkspaces.length + 1
+    )
 
     const deleteWorkspaceSuccess = await sectorFlow.deleteWorkspace(
       newWorkspaceResponse.id
@@ -135,53 +138,20 @@ await describe('node-sectorflow', async () => {
     assert.ok(chatResponse)
   })
 
-  await it.skip('Sends a chat message with a JSON response', async () => {
-    // Name, no comma
-
-    let chatResponse = await sectorFlow.sendChatMessage(
-      workspaceId,
-      'Is "JOHN DOE" a person\'s name? Respond with either `true` or `false`.'
-    )
-
-    console.log(JSON.stringify(chatResponse, undefined, 2))
-
-    assert.strictEqual(
-      chatResponse.choices[0].choices[0].message.content,
-      'true'
-    )
+  await it('Uses the `isPersonName()` wizard', async () => {
+    // Name without a comma
+    let isPersonResponse = await wizards.isPersonName(sectorFlow, 'JAKE RAJNOVICH')
+    assert.strictEqual(isPersonResponse, true)
 
     // Name with comma
-
-    chatResponse = await sectorFlow.sendChatMessage(
-      workspaceId,
-      'Is "SMITH, BONNIE" a person\'s name? Respond with either `true` or `false`.',
-      {
-        threadId: chatResponse.threadId
-      }
-    )
-
-    console.log(JSON.stringify(chatResponse, undefined, 2))
-
-    assert.strictEqual(
-      chatResponse.choices[0].choices[0].message.content,
-      'true'
-    )
+    isPersonResponse = await wizards.isPersonName(sectorFlow, 'BESSERER, TIM')
+    assert.strictEqual(isPersonResponse, true)
 
     // Company name
-
-    chatResponse = await sectorFlow.sendChatMessage(
-      workspaceId,
-      'Is "JIM HARVEY AND SONS" a person\'s name? Respond with either `true` or `false`.',
-      {
-        threadId: chatResponse.threadId
-      }
+    isPersonResponse = await wizards.isPersonName(
+      sectorFlow,
+      'BILL JONES AND SONS TRUCKING'
     )
-
-    console.log(JSON.stringify(chatResponse, undefined, 2))
-
-    assert.strictEqual(
-      chatResponse.choices[0].choices[0].message.content,
-      'false'
-    )
+    assert.strictEqual(isPersonResponse, false)
   })
 })

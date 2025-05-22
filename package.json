@@ -6,7 +6,11 @@
     "node": ">=18.0.0"
   },
   "description": "An unofficial wrapper around the SectorFlow API, allowing you to easily connect to over a dozen AI models.",
-  "exports": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./wizards.js": "./wizards.js",
+    "./wizards/*": "./wizards/*.js"
+  },
   "scripts": {
     "test": "node --test",
     "coverage": "c8 --reporter=lcov --reporter=text --reporter=text-summary node --test"

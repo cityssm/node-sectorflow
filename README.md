@@ -29,28 +29,38 @@ import { SectorFlow } from '@cityssm/sectorflow'
 
 const sectorFlow = new SectorFlow(API_KEY)
 
-// Get the model id for ChatGPT
+/*
+ * Get the model id for ChatGPT
+ */
+
 const chatGPT = await sectorFlow.getModelIdByKeywords('ChatGPT')
 
-const project = await sectorFlow.createProject({
-  name: `My SectorFlow Project`,
+/*
+ * Create a workspace
+ */
+
+const workspace = await sectorFlow.createWorkspace({
+  name: `My SectorFlow Workspace`,
   modelIds: [chatGPT],
   chatHistoryType: 'TEAM',
   contextType: 'SHARED',
   sharingType: 'TEAM'
 })
 
+/*
+ * Chat
+ */
+
 const firstChatResponse = await sectorFlow.sendChatMessage(
-  project.id,
+  workspace.id,
   'Tell me a joke.'
 )
 
 console.log(firstChatResponse.choices[0].choices[0].message.content)
-
 // => "Why don't scientists trust atoms? Because they make up everything!"
 
 const secondChatResponse = await sectorFlow.sendChatMessage(
-  project.id,
+  workspace.id,
   'Tell me another joke.',
   {
     threadId: firstChatResponse.threadId
@@ -58,6 +68,30 @@ const secondChatResponse = await sectorFlow.sendChatMessage(
 )
 
 console.log(secondChatResponse.choices[0].choices[0].message.content)
-
 // => "What do dentists call their x-rays? Tooth pics!"
+```
+
+🧙‍♂️ This package also offers "wizards" to handle some of the heavy lifting
+associated with raw API calls.
+
+```javascript
+import { SectorFlow, wizards } from '@cityssm/sectorflow'
+
+const sectorFlow = new SectorFlow(API_KEY)
+
+const wizardPersonResponse = await wizards.isPersonName(
+  sectorFlow,
+  'JAKE RAJNOVICH'
+)
+
+console.log(wizardPersonResponse)
+// => true
+
+const wizardOtherResponse = await wizards.isPersonName(
+  sectorFlow,
+  'BILL JONES AND SONS TRUCKING'
+)
+
+console.log(wizardOtherResponse)
+// => false
 ```

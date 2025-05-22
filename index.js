@@ -26,7 +26,7 @@ export class SectorFlow {
                     Authorization: `Bearer ${this.#apiKey}`
                 }
             });
-            this.#models = await response.json();
+            this.#models = (await response.json());
         }
         return this.#models ?? [];
     }
@@ -64,7 +64,7 @@ export class SectorFlow {
                 Authorization: `Bearer ${this.#apiKey}`
             }
         });
-        return await response.json();
+        return (await response.json());
     }
     /**
      * Creates a new workspace.
@@ -88,7 +88,7 @@ export class SectorFlow {
             },
             body: JSON.stringify(workspaceRequest)
         });
-        return await response.json();
+        return (await response.json());
     }
     /**
      * Deletes a workspace.
@@ -132,7 +132,7 @@ export class SectorFlow {
             },
             body: formData
         });
-        const threadJson = await response.json();
+        const threadJson = (await response.json());
         threadJson.collectionName = collectionName;
         threadJson.fileName = fileName;
         return threadJson;
@@ -147,7 +147,7 @@ export class SectorFlow {
                 Authorization: `Bearer ${this.#apiKey}`
             }
         });
-        return await response.json();
+        return (await response.json());
     }
     /**
      * Sends messages to a workspace, returning the responses.
@@ -171,7 +171,7 @@ export class SectorFlow {
             },
             body: JSON.stringify(messagesRequest)
         });
-        return await response.json();
+        return (await response.json());
     }
     /**
      * Sends a message to a workspace, returning the responses.
@@ -203,3 +203,4 @@ export class SectorFlow {
         });
     }
 }
+export * as wizards from './wizards.js';
