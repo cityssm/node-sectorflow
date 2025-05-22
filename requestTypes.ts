@@ -1,6 +1,6 @@
 import type { ChatHistoryType, ContextType, SharingType } from './types.js'
 
-export interface ProjectRequest {
+export interface WorkspaceRequest {
   modelIds: string[]
   name: string
   chatHistoryType: ChatHistoryType

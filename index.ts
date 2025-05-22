@@ -4,14 +4,14 @@ import fs from 'node:fs/promises'
 import type {
   ChatMessageRequest,
   ChatMessageRequestRagSettings,
-  ProjectRequest
+  WorkspaceRequest
 } from './requestTypes.js'
 import type {
   ChatMessageResponse,
   CollectionResponse,
   ModelResponse,
-  ProjectResponse,
-  UploadResponse
+  UploadResponse,
+  WorkspaceResponse
 } from './responseTypes.js'
 import type { UUIDString } from './types.js'
 import { isUUID } from './utilities.js'
@@ -86,62 +86,62 @@ export class SectorFlow {
   }
 
   /**
-   * Retrieves the list of projects.
-   * @returns A list of projects.
+   * Retrieves the list of workspaces.
+   * @returns A list of workspaces.
    */
-  async getProjects(): Promise<ProjectResponse[]> {
-    const response = await fetch(`${apiUrl}/projects`, {
+  async getWorkspaces(): Promise<WorkspaceResponse[]> {
+    const response = await fetch(`${apiUrl}/workspaces`, {
       method: 'get',
       headers: {
         Authorization: `Bearer ${this.#apiKey}`
       }
     })
 
-    return await response.json() as ProjectResponse[]
+    return await response.json() as WorkspaceResponse[]
   }
 
   /**
-   * Creates a new project.
-   * @param projectRequest - The settings for the new project.
-   * @returns The new project.
+   * Creates a new workspace.
+   * @param workspaceRequest - The settings for the new workspace.
+   * @returns The new workspace.
    */
-  async createProject(
-    projectRequest: ProjectRequest
-  ): Promise<ProjectResponse> {
-    if (projectRequest.modelIds.length === 0) {
+  async createWorkspace(
+    workspaceRequest: WorkspaceRequest
+  ): Promise<WorkspaceResponse> {
+    if (workspaceRequest.modelIds.length === 0) {
       throw new Error('No modelIds available.')
     }
 
-    for (const modelId of projectRequest.modelIds) {
+    for (const modelId of workspaceRequest.modelIds) {
       if (!isUUID(modelId)) {
         throw new Error(`modelId is not a valid UUID: ${modelId}`)
       }
     }
 
-    const response = await fetch(`${apiUrl}/projects`, {
+    const response = await fetch(`${apiUrl}/workspaces`, {
       method: 'post',
       headers: {
         Authorization: `Bearer ${this.#apiKey}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(projectRequest)
+      body: JSON.stringify(workspaceRequest)
     })
 
-    return await response.json() as ProjectResponse
+    return await response.json() as WorkspaceResponse
   }
 
   /**
-   * Deletes a project.
-   * @param projectId - The project id.
-   * @returns `true` if the project was deleted.
+   * Deletes a workspace.
+   * @param workspaceId - The workspace id.
+   * @returns `true` if the workspace was deleted.
    */
-  async deleteProject(projectId: string): Promise<boolean> {
-    if (!isUUID(projectId)) {
-      throw new Error(`projectId is not a valid UUID: ${projectId}`)
+  async deleteWorkspace(workspaceId: string): Promise<boolean> {
+    if (!isUUID(workspaceId)) {
+      throw new Error(`workspaceId is not a valid UUID: ${workspaceId}`)
     }
 
     const response = await fetch(
-      `${apiUrl}/projects/${projectId.toLowerCase()}`,
+      `${apiUrl}/workspaces/${workspaceId.toLowerCase()}`,
       {
         method: 'delete',
         headers: {
@@ -156,16 +156,16 @@ export class SectorFlow {
 
   /**
    * Uploads a file.
-   * @param projectId - The project id.
+   * @param workspaceId - The workspace id.
    * @param filePath - The file path.
    * @returns The upload response.
    */
   async uploadFile(
-    projectId: string,
+    workspaceId: string,
     filePath: string
   ): Promise<UploadResponse> {
-    if (!isUUID(projectId)) {
-      throw new Error(`projectId is not a valid UUID: ${projectId}`)
+    if (!isUUID(workspaceId)) {
+      throw new Error(`workspaceId is not a valid UUID: ${workspaceId}`)
     }
 
     // eslint-disable-next-line security/detect-non-literal-fs-filename
@@ -179,7 +179,7 @@ export class SectorFlow {
     formData.append('collection', collectionName)
 
     const response = await fetch(
-      `${apiUrl}/chat/${projectId.toLowerCase()}/add-file`,
+      `${apiUrl}/chat/${workspaceId.toLowerCase()}/add-file`,
       {
         method: 'post',
         headers: {
@@ -197,12 +197,12 @@ export class SectorFlow {
     return threadJson as UploadResponse
   }
 
-  async getCollections(projectId: string): Promise<CollectionResponse[]> {
-    if (!isUUID(projectId)) {
-      throw new Error(`projectId is not a valid UUID: ${projectId}`)
+  async getCollections(workspaceId: string): Promise<CollectionResponse[]> {
+    if (!isUUID(workspaceId)) {
+      throw new Error(`workspaceId is not a valid UUID: ${workspaceId}`)
     }
 
-    const response = await fetch(`${apiUrl}/files/${projectId}/collections`, {
+    const response = await fetch(`${apiUrl}/files/${workspaceId}/collections`, {
       method: 'get',
       headers: {
         Authorization: `Bearer ${this.#apiKey}`
@@ -213,28 +213,28 @@ export class SectorFlow {
   }
 
   /**
-   * Sends messages to a project, returning the responses.
-   * @param projectId - The project id.
+   * Sends messages to a workspace, returning the responses.
+   * @param workspaceId - The workspace id.
    * @param messagesRequest - The messages request.
    * @returns The responses to the messages.
    */
   async sendChatMessages(
-    projectId: string,
+    workspaceId: string,
     messagesRequest: ChatMessageRequest
   ): Promise<ChatMessageResponse> {
-    if (!isUUID(projectId)) {
-      throw new Error(`projectId is not a valid UUID: ${projectId}`)
+    if (!isUUID(workspaceId)) {
+      throw new Error(`workspaceId is not a valid UUID: ${workspaceId}`)
     }
 
     if (
       messagesRequest.threadId !== undefined &&
       !isUUID(messagesRequest.threadId)
     ) {
-      throw new Error(`threadId is not a valid UUID: ${projectId}`)
+      throw new Error(`threadId is not a valid UUID: ${workspaceId}`)
     }
 
     const response = await fetch(
-      `${apiUrl}/chat/${projectId.toLowerCase()}/completions`,
+      `${apiUrl}/chat/${workspaceId.toLowerCase()}/completions`,
       {
         method: 'post',
         headers: {
@@ -249,8 +249,8 @@ export class SectorFlow {
   }
 
   /**
-   * Sends a message to a project, returning the responses.
-   * @param projectId - The project id.
+   * Sends a message to a workspace, returning the responses.
+   * @param workspaceId - The workspace id.
    * @param message - The message.
    * @param options - Optional.
    * @param options.threadId - The optional thread id, to continue a chain of messages.
@@ -259,7 +259,7 @@ export class SectorFlow {
    * @returns The responses to the message.
    */
   async sendChatMessage(
-    projectId: string,
+    workspaceId: string,
     message: string,
     options?: {
       threadId?: string
@@ -285,7 +285,7 @@ export class SectorFlow {
       cleanMessage = cleanMessage.replaceAll(/ {2,}/g, ' ')
     }
 
-    return await this.sendChatMessages(projectId, {
+    return await this.sendChatMessages(workspaceId, {
       messages: [{ role: 'user', content: cleanMessage }],
       threadId: options?.threadId,
       ragSettings
@@ -296,5 +296,5 @@ export class SectorFlow {
 export type {
   ChatMessageResponse,
   ModelResponse,
-  ProjectResponse
+  WorkspaceResponse
 } from './responseTypes.js'

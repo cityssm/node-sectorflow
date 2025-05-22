@@ -54,11 +54,11 @@ export class SectorFlow {
         return model.id;
     }
     /**
-     * Retrieves the list of projects.
-     * @returns A list of projects.
+     * Retrieves the list of workspaces.
+     * @returns A list of workspaces.
      */
-    async getProjects() {
-        const response = await fetch(`${apiUrl}/projects`, {
+    async getWorkspaces() {
+        const response = await fetch(`${apiUrl}/workspaces`, {
             method: 'get',
             headers: {
                 Authorization: `Bearer ${this.#apiKey}`
@@ -67,39 +67,39 @@ export class SectorFlow {
         return await response.json();
     }
     /**
-     * Creates a new project.
-     * @param projectRequest - The settings for the new project.
-     * @returns The new project.
+     * Creates a new workspace.
+     * @param workspaceRequest - The settings for the new workspace.
+     * @returns The new workspace.
      */
-    async createProject(projectRequest) {
-        if (projectRequest.modelIds.length === 0) {
+    async createWorkspace(workspaceRequest) {
+        if (workspaceRequest.modelIds.length === 0) {
             throw new Error('No modelIds available.');
         }
-        for (const modelId of projectRequest.modelIds) {
+        for (const modelId of workspaceRequest.modelIds) {
             if (!isUUID(modelId)) {
                 throw new Error(`modelId is not a valid UUID: ${modelId}`);
             }
         }
-        const response = await fetch(`${apiUrl}/projects`, {
+        const response = await fetch(`${apiUrl}/workspaces`, {
             method: 'post',
             headers: {
                 Authorization: `Bearer ${this.#apiKey}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(projectRequest)
+            body: JSON.stringify(workspaceRequest)
         });
         return await response.json();
     }
     /**
-     * Deletes a project.
-     * @param projectId - The project id.
-     * @returns `true` if the project was deleted.
+     * Deletes a workspace.
+     * @param workspaceId - The workspace id.
+     * @returns `true` if the workspace was deleted.
      */
-    async deleteProject(projectId) {
-        if (!isUUID(projectId)) {
-            throw new Error(`projectId is not a valid UUID: ${projectId}`);
+    async deleteWorkspace(workspaceId) {
+        if (!isUUID(workspaceId)) {
+            throw new Error(`workspaceId is not a valid UUID: ${workspaceId}`);
         }
-        const response = await fetch(`${apiUrl}/projects/${projectId.toLowerCase()}`, {
+        const response = await fetch(`${apiUrl}/workspaces/${workspaceId.toLowerCase()}`, {
             method: 'delete',
             headers: {
                 Authorization: `Bearer ${this.#apiKey}`,
@@ -110,13 +110,13 @@ export class SectorFlow {
     }
     /**
      * Uploads a file.
-     * @param projectId - The project id.
+     * @param workspaceId - The workspace id.
      * @param filePath - The file path.
      * @returns The upload response.
      */
-    async uploadFile(projectId, filePath) {
-        if (!isUUID(projectId)) {
-            throw new Error(`projectId is not a valid UUID: ${projectId}`);
+    async uploadFile(workspaceId, filePath) {
+        if (!isUUID(workspaceId)) {
+            throw new Error(`workspaceId is not a valid UUID: ${workspaceId}`);
         }
         // eslint-disable-next-line security/detect-non-literal-fs-filename
         const fileBlob = new Blob([await fs.readFile(filePath)]);
@@ -125,7 +125,7 @@ export class SectorFlow {
         const formData = new FormData();
         formData.append('file', fileBlob, fileName);
         formData.append('collection', collectionName);
-        const response = await fetch(`${apiUrl}/chat/${projectId.toLowerCase()}/add-file`, {
+        const response = await fetch(`${apiUrl}/chat/${workspaceId.toLowerCase()}/add-file`, {
             method: 'post',
             headers: {
                 Authorization: `Bearer ${this.#apiKey}`
@@ -137,11 +137,11 @@ export class SectorFlow {
         threadJson.fileName = fileName;
         return threadJson;
     }
-    async getCollections(projectId) {
-        if (!isUUID(projectId)) {
-            throw new Error(`projectId is not a valid UUID: ${projectId}`);
+    async getCollections(workspaceId) {
+        if (!isUUID(workspaceId)) {
+            throw new Error(`workspaceId is not a valid UUID: ${workspaceId}`);
         }
-        const response = await fetch(`${apiUrl}/files/${projectId}/collections`, {
+        const response = await fetch(`${apiUrl}/files/${workspaceId}/collections`, {
             method: 'get',
             headers: {
                 Authorization: `Bearer ${this.#apiKey}`
@@ -150,20 +150,20 @@ export class SectorFlow {
         return await response.json();
     }
     /**
-     * Sends messages to a project, returning the responses.
-     * @param projectId - The project id.
+     * Sends messages to a workspace, returning the responses.
+     * @param workspaceId - The workspace id.
      * @param messagesRequest - The messages request.
      * @returns The responses to the messages.
      */
-    async sendChatMessages(projectId, messagesRequest) {
-        if (!isUUID(projectId)) {
-            throw new Error(`projectId is not a valid UUID: ${projectId}`);
+    async sendChatMessages(workspaceId, messagesRequest) {
+        if (!isUUID(workspaceId)) {
+            throw new Error(`workspaceId is not a valid UUID: ${workspaceId}`);
         }
         if (messagesRequest.threadId !== undefined &&
             !isUUID(messagesRequest.threadId)) {
-            throw new Error(`threadId is not a valid UUID: ${projectId}`);
+            throw new Error(`threadId is not a valid UUID: ${workspaceId}`);
         }
-        const response = await fetch(`${apiUrl}/chat/${projectId.toLowerCase()}/completions`, {
+        const response = await fetch(`${apiUrl}/chat/${workspaceId.toLowerCase()}/completions`, {
             method: 'post',
             headers: {
                 Authorization: `Bearer ${this.#apiKey}`,
@@ -174,8 +174,8 @@ export class SectorFlow {
         return await response.json();
     }
     /**
-     * Sends a message to a project, returning the responses.
-     * @param projectId - The project id.
+     * Sends a message to a workspace, returning the responses.
+     * @param workspaceId - The workspace id.
      * @param message - The message.
      * @param options - Optional.
      * @param options.threadId - The optional thread id, to continue a chain of messages.
@@ -183,7 +183,7 @@ export class SectorFlow {
      * @param options.fileName - The optional SectorFlow file name. Used with the collectionName option.
      * @returns The responses to the message.
      */
-    async sendChatMessage(projectId, message, options) {
+    async sendChatMessage(workspaceId, message, options) {
         let cleanMessage = message;
         // eslint-disable-next-line @typescript-eslint/init-declarations
         let ragSettings;
@@ -196,7 +196,7 @@ export class SectorFlow {
             };
             cleanMessage = cleanMessage.replaceAll(/ {2,}/g, ' ');
         }
-        return await this.sendChatMessages(projectId, {
+        return await this.sendChatMessages(workspaceId, {
             messages: [{ role: 'user', content: cleanMessage }],
             threadId: options?.threadId,
             ragSettings

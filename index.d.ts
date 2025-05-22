@@ -1,5 +1,5 @@
-import type { ChatMessageRequest, ProjectRequest } from './requestTypes.js';
-import type { ChatMessageResponse, CollectionResponse, ModelResponse, ProjectResponse, UploadResponse } from './responseTypes.js';
+import type { ChatMessageRequest, WorkspaceRequest } from './requestTypes.js';
+import type { ChatMessageResponse, CollectionResponse, ModelResponse, UploadResponse, WorkspaceResponse } from './responseTypes.js';
 import type { UUIDString } from './types.js';
 export declare class SectorFlow {
     #private;
@@ -23,40 +23,40 @@ export declare class SectorFlow {
      */
     getModelIdByKeywords(spaceSeparatedKeywords: string): Promise<UUIDString | undefined>;
     /**
-     * Retrieves the list of projects.
-     * @returns A list of projects.
+     * Retrieves the list of workspaces.
+     * @returns A list of workspaces.
      */
-    getProjects(): Promise<ProjectResponse[]>;
+    getWorkspaces(): Promise<WorkspaceResponse[]>;
     /**
-     * Creates a new project.
-     * @param projectRequest - The settings for the new project.
-     * @returns The new project.
+     * Creates a new workspace.
+     * @param workspaceRequest - The settings for the new workspace.
+     * @returns The new workspace.
      */
-    createProject(projectRequest: ProjectRequest): Promise<ProjectResponse>;
+    createWorkspace(workspaceRequest: WorkspaceRequest): Promise<WorkspaceResponse>;
     /**
-     * Deletes a project.
-     * @param projectId - The project id.
-     * @returns `true` if the project was deleted.
+     * Deletes a workspace.
+     * @param workspaceId - The workspace id.
+     * @returns `true` if the workspace was deleted.
      */
-    deleteProject(projectId: string): Promise<boolean>;
+    deleteWorkspace(workspaceId: string): Promise<boolean>;
     /**
      * Uploads a file.
-     * @param projectId - The project id.
+     * @param workspaceId - The workspace id.
      * @param filePath - The file path.
      * @returns The upload response.
      */
-    uploadFile(projectId: string, filePath: string): Promise<UploadResponse>;
-    getCollections(projectId: string): Promise<CollectionResponse[]>;
+    uploadFile(workspaceId: string, filePath: string): Promise<UploadResponse>;
+    getCollections(workspaceId: string): Promise<CollectionResponse[]>;
     /**
-     * Sends messages to a project, returning the responses.
-     * @param projectId - The project id.
+     * Sends messages to a workspace, returning the responses.
+     * @param workspaceId - The workspace id.
      * @param messagesRequest - The messages request.
      * @returns The responses to the messages.
      */
-    sendChatMessages(projectId: string, messagesRequest: ChatMessageRequest): Promise<ChatMessageResponse>;
+    sendChatMessages(workspaceId: string, messagesRequest: ChatMessageRequest): Promise<ChatMessageResponse>;
     /**
-     * Sends a message to a project, returning the responses.
-     * @param projectId - The project id.
+     * Sends a message to a workspace, returning the responses.
+     * @param workspaceId - The workspace id.
      * @param message - The message.
      * @param options - Optional.
      * @param options.threadId - The optional thread id, to continue a chain of messages.
@@ -64,10 +64,10 @@ export declare class SectorFlow {
      * @param options.fileName - The optional SectorFlow file name. Used with the collectionName option.
      * @returns The responses to the message.
      */
-    sendChatMessage(projectId: string, message: string, options?: {
+    sendChatMessage(workspaceId: string, message: string, options?: {
         threadId?: string;
         collectionName?: string;
         fileName?: string;
     }): Promise<ChatMessageResponse>;
 }
-export type { ChatMessageResponse, ModelResponse, ProjectResponse } from './responseTypes.js';
+export type { ChatMessageResponse, ModelResponse, WorkspaceResponse } from './responseTypes.js';

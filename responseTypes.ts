@@ -11,8 +11,10 @@ import type {
 
 interface SectorFlowUsage {
   promptTokens: number
-  completionTokes: number
+  completionTokens: number
+  reasoningTokens: number
   totalTokens: number
+
   credits: number
   responseTimeMs: number
   modelUsage: unknown[]
@@ -46,7 +48,7 @@ export interface ModelResponse {
   description: string
 }
 
-export interface ProjectResponse {
+export interface WorkspaceResponse {
   id: string
   name: string
   models: Array<{
@@ -64,10 +66,14 @@ export interface ChatMessageResponse {
   threadId: UUIDString
   chatId: UUIDString
   choices: Array<{
+    created: number
+
     modelId: UUIDString
     modelName: string
     baseModel: string
+
     icon: string
+    
     choices: Array<{
       // id: UUIDString
       modelId: UUIDString
@@ -84,7 +90,7 @@ export interface ChatMessageResponse {
         pageNum: number
         matchScore: number
       }>
-      finishReason?: 'stop' | 'error' | string
+      finishReason?: 'error' | 'stop' | string
     }>,
     usage: SectorFlowUsage
   }>
